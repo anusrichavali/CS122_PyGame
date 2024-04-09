@@ -1,1 +1,1 @@
-# CS122_PyGame
+# Spartan Dash
