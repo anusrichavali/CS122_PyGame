@@ -10,7 +10,7 @@ def button_creation(text, x, y):
     choose_char.fill("#f2461f")
     char_text = font.render(text, True, "#ebfbfc")
     char_text_rect = char_text.get_rect(center=(choose_char.get_width()/2, choose_char.get_height()/2))
-    button_rect = pygame.Rect(x, y, 150, 50)
+    button_rect = pygame.Rect(x, y, 200, 50)
     return [choose_char, char_text, char_text_rect, button_rect]
 
 #create the screen and configure the screen size, background color, and caption
@@ -34,10 +34,14 @@ DEFAULT_SIZE = (300, 300)
 anusri_img = pygame.image.load("sprite_images/Anusri_Sprite.png")
 anusri_img = pygame.transform.scale(anusri_img, DEFAULT_SIZE)
 
+neha_img = pygame.image.load("sprite_images/Neha_Sprite.png")
+neha_img = pygame.transform.scale(neha_img, DEFAULT_SIZE)
+
+
 #initialize variables before running the character_selection page
 running = True
 character_selected = ""
-#whie the page is running
+#while the page is running
 while running:
     #register interactions with the screen
     for event in pygame.event.get():
@@ -52,6 +56,7 @@ while running:
                 choose_neha[0].fill("#f77a5e")
                 choose_anusri[0].fill("#f2461f")
                 character_selected = "Neha"
+                print("Neha")
             #store "anusri" as selected character and configure button colors to show selection
             elif choose_anusri[3].collidepoint(mouse_position):
                 choose_anusri[0].fill("#f77a5e")
@@ -80,6 +85,8 @@ while running:
 
     #while the program is running, display the character images on the screen
     screen.blit(anusri_img, (choose_anusri[3].x - 50, choose_anusri[3].y - anusri_img.get_height() - 50))
+    screen.blit(neha_img, (choose_neha[3].x - 50, choose_neha[3].y - neha_img.get_height() - 50))
+
     #screen.blit(background_img, (0, screen_info.current_h/2))
 
     #display the next button only after one of the characters has been selected
