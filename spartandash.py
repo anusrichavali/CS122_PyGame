@@ -6,19 +6,7 @@ import random
 
 pygame.init()
 
-
-#print(pygame.__version__)
-
-#load fighters
-bee = pygame.image.load("resources/Bee.png")
-fly = pygame.image.load("resources/Fly.png")
-plane = pygame.image.load("resources/BluePlane.png")
-
-#load shooters
-bee_shooter = pygame.image.load("resources/shooter-blue.png")
-fly_shooter = pygame.image.load("resources/shooter-red.png")
-plane_shooter = pygame.image.load("resources/shooter-green.png")
-sprite_shooter = pygame.image.load("resources/shooter-sprite.png")
+font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
 
 #load sprite (main player)
 with open('Starting_Page/selected_character.txt', 'r') as file:
@@ -38,25 +26,37 @@ screen.fill("#87CEEB")
 pygame.display.set_caption("SpartanDash")
 pygame.display.flip()
 
-#load and scale background
+#load and scale background. update enemies based on location
 with open('Starting_Page/selected_location.txt', 'r') as file:
     location = file.readline().strip()
 
 if(location == "SRAC"): #CHANGE THIS TO TOWER LAWN!!!
     background = pygame.image.load("resources/tower_lawn.jpeg")
+    #load enemies --> these are the things that will shoot at sprite 
+    enemy_1 = pygame.image.load("resources/Bee.png")
+    enemy_2 = pygame.image.load("resources/Fly.png")
 elif(location == "SRAC"):
-    sprite = pygame.image.load("resources/Anusri_Sprite.png")
+    background = pygame.image.load("resources/srac.png")
+    #load enemies --> these are the things that will shoot at sprite 
+    enemy_1 = pygame.image.load("resources/dumbell.png")
+    enemy_2 = pygame.image.load("resources/basketball.png")
 elif(location == "MLK"):
-    sprite = pygame.image.load("resources/Erica_Sprite.png")
+    background = pygame.image.load("resources/mlk.png")
+    #load enemies --> these are the things that will shoot at sprite 
+    enemy_1 = pygame.image.load("resources/books.png")
+    enemy_2 = pygame.image.load("resources/laptop.png")
 
-
+#scale background to fit screen
 DEFAULT_SIZE = (350, 245)
-#background = pygame.image.load("resources/tower_lawn.jpeg")
 original_width, original_height = background.get_size()
 new_height = int((screen_info.current_w / original_width) * original_height)
 background = pygame.transform.scale(background, (screen_info.current_w, new_height))
 
-font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
+#load shooters --> this is what comes out of the enemies and sprite
+enemy_1_shooter = pygame.image.load("resources/shooter-blue.png")
+enemy_2_shooter = pygame.image.load("resources/shooter-red.png")
+sprite_shooter = pygame.image.load("resources/shooter-sprite.png")
+
 
 class Asset:
     def __init__(self, xPos, yPos, health = 100):
@@ -79,7 +79,6 @@ def run():
     lives = 5
 
     asset = Asset(300, 650)
-    #asset.draw(screen)
 
     while running:
         timer.tick(FPS)
