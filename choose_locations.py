@@ -10,7 +10,7 @@ def button_creation(text, x, y):
     choose_loc.fill("#f2461f")
     loc_text = font.render(text, True, "#ebfbfc")
     loc_text_rect = loc_text.get_rect(center=(choose_loc.get_width()/2, choose_loc.get_height()/2))
-    button_rect = pygame.Rect(x, y, 200, 50)
+    button_rect = pygame.Rect(x, y, 250, 50)
     return [choose_loc, loc_text, loc_text_rect, button_rect]
 
 #create the screen and configure the screen size, background color, and caption
@@ -27,13 +27,13 @@ subtitle_font = pygame.font.Font("resources/Grand9KPixel.ttf", 40)
 segment_width = screen_info.current_w/4 #number of buttons + one segment
 #use button_creation function to create selecot buttons for both characters and next button
 choose_srac = button_creation("Choose SRAC", (segment_width - 150/2), 2 * (screen_info.current_h/3))
-choose_su = button_creation("Choose SU", 2 * segment_width - 150/2, 2 * (screen_info.current_h/3))
+choose_tl = button_creation("Choose TL", 2 * segment_width - 150/2, 2 * (screen_info.current_h/3))
 choose_mlk = button_creation("Choose MLK", 3 * segment_width - 150/2, 2 * (screen_info.current_h/3))
 start_button = button_creation("Start", screen_info.current_w - 300, screen_info.current_h - 200)
 
 #load sprite images and resize them
 DEFAULT_SIZE = (350, 245)
-temp_img = pygame.image.load("resources/tower_lawn.png")
+temp_img = pygame.image.load("resources/tower_lawn.jpeg")
 temp_img = pygame.transform.scale(temp_img, DEFAULT_SIZE)
 
 #initialize variables before running the choose_locations page
@@ -53,21 +53,21 @@ def run():
                 #store "srac" as selected location and configure button colors to show selection
                 if choose_srac[3].collidepoint(mouse_position):
                     choose_srac[0].fill("#f77a5e")
-                    choose_su[0].fill("#f2461f")
+                    choose_tl[0].fill("#f2461f")
                     choose_mlk[0].fill("#f2461f")
                     location_selected = "SRAC"
                     print("SRAC")
                 #store "su" as selected location and configure button colors to show selection
-                elif choose_su[3].collidepoint(mouse_position):
-                    choose_su[0].fill("#f77a5e")
+                elif choose_tl[3].collidepoint(mouse_position):
+                    choose_tl[0].fill("#f77a5e")
                     choose_srac[0].fill("#f2461f")
                     choose_mlk[0].fill("#f2461f")
-                    location_selected = "SU"
-                    print("Student Union")
+                    location_selected = "TOWER LAWN"
+                    print("TOWER LAWN")
                 #store "mlk" as selected location and configure button colors to show selection
                 elif choose_mlk[3].collidepoint(mouse_position):
                     choose_mlk[0].fill("#f77a5e")
-                    choose_su[0].fill("#f2461f")
+                    choose_tl[0].fill("#f2461f")
                     choose_srac[0].fill("#f2461f")
                     location_selected = "MLK"
                     print("MLK")
@@ -87,15 +87,15 @@ def run():
 
         # while the program is running, display the Select Location buttons
         choose_srac[0].blit(choose_srac[1], choose_srac[2])
-        choose_su[0].blit(choose_su[1], choose_su[2])
+        choose_tl[0].blit(choose_tl[1], choose_tl[2])
         choose_mlk[0].blit(choose_mlk[1], choose_mlk[2])
         screen.blit(choose_srac[0], (choose_srac[3].x, choose_srac[3].y))
-        screen.blit(choose_su[0], (choose_su[3].x, choose_su[3].y))
+        screen.blit(choose_tl[0], (choose_tl[3].x, choose_tl[3].y))
         screen.blit(choose_mlk[0], (choose_mlk[3].x, choose_mlk[3].y))
 
         #while the program is running, display the location images on the screen
         screen.blit(temp_img, (choose_srac[3].x - 50, choose_srac[3].y - temp_img.get_height() - 50))
-        screen.blit(temp_img, (choose_su[3].x - 50, choose_su[3].y - temp_img.get_height() - 50))
+        screen.blit(temp_img, (choose_tl[3].x - 50, choose_tl[3].y - temp_img.get_height() - 50))
         screen.blit(temp_img, (choose_mlk[3].x - 50, choose_mlk[3].y - temp_img.get_height() - 50))
 
 
@@ -108,3 +108,4 @@ def run():
 
         #update all the changes while the screen is running
         pygame.display.update()
+
