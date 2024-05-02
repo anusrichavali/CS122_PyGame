@@ -1,7 +1,6 @@
-#space invaders game
 import pygame
 import os
-import time
+#import time
 import random
 
 pygame.init()
@@ -9,6 +8,14 @@ pygame.init()
 font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
 message_font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
 
+def button_creation(text, x, y):
+    font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
+    lost = pygame.Surface((350,150))
+    lost.fill("#f2461f")
+    message = font.render(text, True, "#ebfbfc")
+    message_rect = message.get_rect(center=(lost.get_width()/2, lost.get_height()/2))
+    button_rect = pygame.Rect(x, y, 350, 150)
+    return [lost, message, message_rect, button_rect]
 
 #load sprite (main player)
 with open('selected_character.txt', 'r') as file:
@@ -110,17 +117,13 @@ def run():
         if lost_status == True:
             if lost_message_time >= FPS * 3:
                 running = False
-            else:
-                continue
         else:
             if len(obstacles) == 0:
                 level += 1
                 obstacle_num += 1
                 for num in range(obstacle_num):
-                    obstacle = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([obs_1, obs_2]))
+                    obstacle = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-1000, -50), 100, random.choice([obs_1, obs_2]))
                     obstacles.append(obstacle)
-
-            
 
             for event in pygame.event.get():
                 #exit the loop and close the screen in player quits
@@ -159,9 +162,8 @@ def set_background(level, player, obstacles, lost_status):
         obstacle.draw(screen)
 
     if lost_status == True:
-        lost_text = message_font.render("You Lost!", 1, "black")
-        screen.blit(lost_text, ((screen_info.current_w - lost_text.get_width())/2, (screen_info.current_h - lost_text.get_height())/2))
-
+        lost_button = button_creation("You Lost", screen_info.current_w/2, screen_info.current_h/2)
+        lost_button[0].blit(lost_button[1],lost_button[2])
+        screen.blit(lost_button[0], (lost_button[3].x - 150, lost_button[3].y - 150))
+    
     pygame.display.update()
-
-run()
