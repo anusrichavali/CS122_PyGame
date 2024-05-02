@@ -54,7 +54,7 @@ def run():
         for event in pygame.event.get():
             #exit the loop and close the screen in player quits
             if event.type == pygame.QUIT:
-                running = False
+                return "Quit"
             #if player clicks on the screen
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_position = pygame.mouse.get_pos()
@@ -84,7 +84,7 @@ def run():
                     next_button[0].fill("#f77a5e")
                     with open("selected_character.txt", "w") as file:
                         file.write(character_selected)
-                    running = False
+                    return "Next"
         
         #while the program is running, display the title and subtitle on the screen
         title = title_font.render("SpartanDash: Campus Run", True, "#FFD700")
@@ -114,7 +114,3 @@ def run():
         #update all the changes while the screen is running
         pygame.display.update()
 
-    import choose_locations
-    choose_locations.run()
-
-run()

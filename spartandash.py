@@ -40,7 +40,7 @@ if(location == "TOWER LAWN"): #CHANGE THIS TO TOWER LAWN!!!
 elif(location == "SRAC"):
     background = pygame.image.load("resources/srac.png")
     #load enemies --> these are the things that will shoot at sprite 
-    obs_1 = "resources/dumbell.png"
+    obs_1 = "resources/dumbbell.png"
     obs_2 = "resources/basketball.png"
 elif(location == "MLK"):
     background = pygame.image.load("resources/mlk.png")
@@ -142,7 +142,7 @@ def run():
                 if obstacle.yPos + 100 > screen_info.current_h:
                     player.lives -= 1
                     obstacles.remove(obstacle)
-   
+    return "Done"
 
 def set_background(level, player, obstacles, lost_status):
     #draw background to screen
