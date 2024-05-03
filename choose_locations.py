@@ -33,8 +33,12 @@ start_button = button_creation("Start", screen_info.current_w - 300, screen_info
 
 #load sprite images and resize them
 DEFAULT_SIZE = (350, 245)
-temp_img = pygame.image.load("resources/tower_lawn.jpeg")
-temp_img = pygame.transform.scale(temp_img, DEFAULT_SIZE)
+tl_img = pygame.image.load("resources/tower_lawn.jpeg")
+tl_img = pygame.transform.scale(tl_img, DEFAULT_SIZE)
+srac_img = pygame.image.load("resources/srac.png")
+srac_img = pygame.transform.scale(srac_img, DEFAULT_SIZE)
+mlk_img = pygame.image.load("resources/mlk.png")
+mlk_img = pygame.transform.scale(mlk_img, DEFAULT_SIZE)
 
 #initialize variables before running the choose_locations page
 def run():
@@ -94,9 +98,9 @@ def run():
         screen.blit(choose_mlk[0], (choose_mlk[3].x, choose_mlk[3].y))
 
         #while the program is running, display the location images on the screen
-        screen.blit(temp_img, (choose_srac[3].x - 50, choose_srac[3].y - temp_img.get_height() - 50))
-        screen.blit(temp_img, (choose_tl[3].x - 50, choose_tl[3].y - temp_img.get_height() - 50))
-        screen.blit(temp_img, (choose_mlk[3].x - 50, choose_mlk[3].y - temp_img.get_height() - 50))
+        screen.blit(srac_img, (choose_srac[3].x - 50, choose_srac[3].y - srac_img.get_height() - 50))
+        screen.blit(tl_img, (choose_tl[3].x - 50, choose_tl[3].y - tl_img.get_height() - 50))
+        screen.blit(mlk_img, (choose_mlk[3].x - 50, choose_mlk[3].y - mlk_img.get_height() - 50))
 
 
         #screen.blit(background_img, (0, screen_info.current_h/2))
