@@ -26,7 +26,7 @@ title_font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
 subtitle_font = pygame.font.Font("resources/Grand9KPixel.ttf", 40)
 
 segment_width = screen_info.current_w/4
-#use button_creation function to create selecot buttons for both characters and next button
+#use button_creation function to create select buttons for both characters and next button
 choose_neha = button_creation("Choose Neha", (segment_width - 75), 2 * (screen_info.current_h/3))
 choose_anusri = button_creation("Choose Anusri", 2* (segment_width) - 75, 2 * (screen_info.current_h/3))
 choose_erica = button_creation("Choose Erica", 3 * (segment_width) - 75, 2 * (screen_info.current_h/3))

@@ -1,21 +1,13 @@
+#space invaders game
 import pygame
 import os
-#import time
+import time
 import random
 
 pygame.init()
 
 font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
 message_font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
-
-def button_creation(text, x, y):
-    font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
-    lost = pygame.Surface((350,150))
-    lost.fill("#f2461f")
-    message = font.render(text, True, "#ebfbfc")
-    message_rect = message.get_rect(center=(lost.get_width()/2, lost.get_height()/2))
-    button_rect = pygame.Rect(x, y, 350, 150)
-    return [lost, message, message_rect, button_rect]
 
 #load sprite (main player)
 with open('selected_character.txt', 'r') as file:
@@ -66,7 +58,6 @@ enemy_1_shooter = pygame.image.load("resources/shooter-blue.png")
 enemy_2_shooter = pygame.image.load("resources/shooter-red.png")
 sprite_shooter = pygame.image.load("resources/shooter-sprite.png")
 
-
 class Asset:
     def __init__(self, xPos, yPos, lives = 5, sprite_img = None):
         self.xPos = xPos
@@ -75,10 +66,13 @@ class Asset:
         if sprite_img:
             self.sprite_img = pygame.image.load(sprite_img)
             self.sprite_img = pygame.transform.scale(self.sprite_img, (100, 100))
+            self.mask = pygame.mask.from_surface(self.sprite_img)
         else:
             self.sprite_img = None
+            self.mask = None
         self.lasers = []
         self.cool_down_counter = 0
+        self.visible = True
 
     def draw(self, screen):
         if self.sprite_img:
@@ -91,6 +85,14 @@ class Asset:
     
     def move_y(self, value):
         self.yPos += value
+    
+    # checks if the player and prop collide
+    def collide(self, player, prop):
+        offset_x = prop.xPos - player.xPos
+        offset_y = prop.yPos - player.yPos
+        if player.mask and prop.mask:
+            return player.mask.overlap(prop.mask, (offset_x, offset_y))
+        return False
 
 #main loop
 def run():
@@ -98,16 +100,17 @@ def run():
     timer = pygame.time.Clock()
     FPS = 85 #frames per second for speed
     level = 0
+    score = 0
 
     player = Asset(300, 650, sprite_img = sprite)
 
-    obstacles = []
-    obstacle_num = 5
+    props = []
+    prop_num = 5
     lost_status = False
     lost_message_time = 0
 
     while running:
-        set_background(level, player, obstacles, lost_status)
+        set_background(level, player, props, lost_status, score)
         timer.tick(FPS)
 
         if player.lives <= 0:
@@ -117,13 +120,15 @@ def run():
         if lost_status == True:
             if lost_message_time >= FPS * 3:
                 running = False
+            else:
+                continue
         else:
-            if len(obstacles) == 0:
+            if len(props) == 0:
                 level += 1
-                obstacle_num += 1
-                for num in range(obstacle_num):
-                    obstacle = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-1000, -50), 100, random.choice([obs_1, obs_2]))
-                    obstacles.append(obstacle)
+                prop_num += 1
+                for num in range(prop_num):
+                    prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([obs_1, obs_2]))
+                    props.append(prop)
 
             for event in pygame.event.get():
                 #exit the loop and close the screen in player quits
@@ -140,30 +145,38 @@ def run():
             if pressed[pygame.K_DOWN] == True and player.yPos + 50 <= screen_info.current_h: 
                 player.move_y(7)
 
-            for obstacle in obstacles:
-                obstacle.move_y(1)
-                if obstacle.yPos + 100 > screen_info.current_h:
+            for prop in props:
+                prop.move_y(1)
+                if prop.yPos + 100 > screen_info.current_h:
                     player.lives -= 1
-                    obstacles.remove(obstacle)
+                    score -= 125
+                    props.remove(prop)
+                # if collision, remove prop from screen
+                if player.collide(player, prop):
+                    prop.visible = False
+                    score += 100
+                    props.remove(prop)
+
     return "Done"
 
-def set_background(level, player, obstacles, lost_status):
+def set_background(level, player, props, lost_status, score):
     #draw background to screen
     screen.blit(background, (0,0)) 
 
     levels_text = font.render(f"Level: {level}", True, "black")
     lives_text = font.render(f"Lives: {player.lives}", True, "black")
+    score_text = font.render(f"Score: {score}", True, "black")
 
-    screen.blit(levels_text, (screen_info.current_w - 125, 10))
-    screen.blit(lives_text, (screen_info.current_w - 125, 50))
+    screen.blit(levels_text, (screen_info.current_w - 165, 10))
+    screen.blit(lives_text, (screen_info.current_w - 165, 50))
+    screen.blit(score_text, (screen_info.current_w - 165, 90))
 
     player.draw(screen)
-    for obstacle in obstacles:
-        obstacle.draw(screen)
+    for prop in props:
+        prop.draw(screen)
 
     if lost_status == True:
-        lost_button = button_creation("You Lost", screen_info.current_w/2, screen_info.current_h/2)
-        lost_button[0].blit(lost_button[1],lost_button[2])
-        screen.blit(lost_button[0], (lost_button[3].x - 150, lost_button[3].y - 150))
-    
+        lost_text = message_font.render("You Lost!", 1, "black")
+        screen.blit(lost_text, ((screen_info.current_w - lost_text.get_width())/2, (screen_info.current_h - lost_text.get_height())/2))
+
     pygame.display.update()
