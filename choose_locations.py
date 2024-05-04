@@ -79,7 +79,7 @@ def run():
                 #move to the next page
                 elif start_button[3].collidepoint(mouse_position) and location_selected != "":
                     start_button[0].fill("#f77a5e")
-                    with open("selected_location.txt", "w") as file:
+                    with open("saved_states/selected_location.txt", "w") as file:
                         file.write(location_selected)
                     return "Start"
         

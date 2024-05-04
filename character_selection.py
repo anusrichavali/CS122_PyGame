@@ -82,7 +82,7 @@ def run():
                 #move to the next page
                 elif next_button[3].collidepoint(mouse_position) and character_selected != "":
                     next_button[0].fill("#f77a5e")
-                    with open("selected_character.txt", "w") as file:
+                    with open("saved_states/selected_character.txt", "w") as file:
                         file.write(character_selected)
                     return "Next"
         
