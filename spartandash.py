@@ -6,6 +6,7 @@ pygame.init()
 
 font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
 message_font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
+smaller_font = pygame.font.Font("resources/Grand9KPixel.ttf", 20)
 
 #create buttons with specified sizes, fontsize, and color
 def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
@@ -17,10 +18,21 @@ def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
     button_rect = pygame.Rect(x, y, sizeW, sizeH)
     return [button, message, message_rect, button_rect]
 
+#writes the high score to high_score.txt
+def write_high_score(score):
+    if score > int(high_score):
+        with open("saved_states/high_score.txt", "w") as file:
+            file.write(str(score))
+
 #load sprite (main player)
-with open('selected_character.txt', 'r') as file:
-    # Read the first line
-    character = file.readline().strip()
+#chooses random if selected_character.txt does not exist
+try: 
+    with open('saved_states/selected_character.txt', 'r') as file:
+        # Read the first line
+        character = file.readline().strip()
+except:
+    character = random.choice(["Neha", "Anusri", "Erica"])
+
 if(character == "Neha"):
     sprite = "resources/Neha_Sprite.png"
 elif(character == "Anusri"):
@@ -36,9 +48,12 @@ pygame.display.set_caption("SpartanDash")
 pygame.display.flip()
 
 #load and scale background. update enemies based on location
-with open('selected_location.txt', 'r') as file:
-    location = file.readline().strip()
-
+#chooses random if selected_location.txt does not exist
+try: 
+    with open('saved_states/selected_location.txt', 'r') as file:
+        location = file.readline().strip()
+except:
+    location = random.choice(["TOWER LAWN", "SRAC", "MLK"])
 #load background and props based on the selected location
 if(location == "TOWER LAWN"):
     background = pygame.image.load("resources/tower_lawn.jpeg")
@@ -52,6 +67,10 @@ elif(location == "MLK"):
     background = pygame.image.load("resources/mlk.png")
     prop_1 = "resources/books.png"
     prop_2 = "resources/laptop.png"
+
+
+with open("saved_states/high_score.txt", "r") as file:
+    high_score = file.readline().strip()
 
 #scale background to fit screen
 DEFAULT_SIZE = (350, 245)
@@ -152,6 +171,7 @@ def run():
         for event in pygame.event.get():
             #exit the loop and close the screen in player quits
             if event.type == pygame.QUIT:
+                write_high_score(score)
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
@@ -164,14 +184,19 @@ def run():
                         pause_message = "Pause"
                         pause_color = "#f2461f"
                 if restart_button[3].collidepoint(mouse_pos):
-                    #lost_status = False
+                    #runs the game again and sets lost status to false
+                    write_high_score(score)
                     run()
                 if quit_button[3].collidepoint(mouse_pos):
-                    #lost_status = False
+                    #quits the game
+                    write_high_score(score)
                     running = False
 
         #skips all the movement while the game is paused or character has lost
-        if paused == True or lost_status == True:
+        if paused == True:
+            continue
+        
+        if not paused and lost_status == True:
             continue
   
         #handles key presses to move the player
@@ -182,7 +207,7 @@ def run():
             player.move_x(-player_speed)
         if pressed[pygame.K_UP] == True and player.yPos >= 0:
             player.move_y(-player_speed)
-        if pressed[pygame.K_DOWN] == True and player.yPos + 50 <= screen_info.current_h: 
+        if pressed[pygame.K_DOWN] == True and player.yPos - 50 <= screen_info.current_h: 
             player.move_y(player_speed)
 
         #moves the props, handles score, deletes prop if it reaches bottom or collides with player
@@ -210,13 +235,18 @@ def set_background(level, player, props, lost_status, score, pause_button, resta
     levels_text = font.render(f"Level: {level}", True, "black")
     lives_text = font.render(f"Lives: {player.lives}", True, "black")
     score_text = font.render(f"Score: {score}", True, "black")
+    high_score_text = smaller_font.render(f"High Score: {high_score}", True, "black")
     screen.blit(levels_text, (screen_info.current_w - 165, 10))
     screen.blit(lives_text, (screen_info.current_w - 165, 50))
     screen.blit(score_text, (screen_info.current_w - 165, 90))
+    screen.blit(high_score_text, (120, 10))
 
     #display pause/resume button on top left corner
     pause_button[0].blit(pause_button[1], pause_button[2])
     screen.blit(pause_button[0], (pause_button[3].x, pause_button[3].y))
+
+    #Display high score on top left corner
+
 
     #draw the players and props
     player.draw(screen)
