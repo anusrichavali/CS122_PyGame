@@ -269,9 +269,9 @@ def set_background(level, player, props, lost_status, score, pause_button, resta
     lives_text = font.render(f"Lives: {player.lives}", True, "black")
     score_text = font.render(f"Score: {score}", True, "black")
     high_score_text = smaller_font.render(f"High Score: {high_score}", True, "black")
-    screen.blit(levels_text, (screen_info.current_w - 165, 10))
-    screen.blit(lives_text, (screen_info.current_w - 165, 50))
-    screen.blit(score_text, (screen_info.current_w - 165, 90))
+    screen.blit(levels_text, (screen_info.current_w - 215, 10))
+    screen.blit(lives_text, (screen_info.current_w - 215, 50))
+    screen.blit(score_text, (screen_info.current_w - 215, 90))
     screen.blit(high_score_text, (120, 10))
 
     #display pause/resume button on top left corner
