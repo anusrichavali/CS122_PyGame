@@ -90,6 +90,7 @@ class Asset:
         self.yPos = yPos
         self.lives = lives
         if sprite_img:
+            self.sprite_img_path = sprite_img
             self.sprite_img = pygame.image.load(sprite_img)
             self.sprite_img = pygame.transform.scale(self.sprite_img, (100, 100))
             self.mask = pygame.mask.from_surface(self.sprite_img)
@@ -143,6 +144,9 @@ def run():
     prop_speed = 1
     player_speed = 7
 
+    player_size_timer = None
+    player_original_size = (100, 100)
+
     lost_status = False
     pause_message = "Pause"
     pause_color = "#f2461f"
@@ -176,7 +180,10 @@ def run():
             prop_speed += 0.5
             player_speed += 1
             for num in range(prop_num):
-                prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([prop_1, prop_2, bonus_prop]))
+                if random.random() < 0.1:
+                    prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, bonus_prop)
+                else:
+                    prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([prop_1, prop_2]))
                 props.append(prop)
 
         #handles button clicks 
@@ -234,13 +241,13 @@ def run():
   
         #handles key presses to move the player
         pressed = pygame.key.get_pressed()
-        if pressed[pygame.K_RIGHT] == True and player.xPos + 50 <= screen_info.current_w:
+        if pressed[pygame.K_RIGHT] == True and player.xPos + player.sprite_img.get_width() <= screen_info.current_w:
             player.move_x(player_speed)
         if pressed[pygame.K_LEFT] == True and player.xPos >= 0:
             player.move_x(-player_speed)
         if pressed[pygame.K_UP] == True and player.yPos >= 0:
             player.move_y(-player_speed)
-        if pressed[pygame.K_DOWN] == True and player.yPos + 150 <= screen_info.current_h: 
+        if pressed[pygame.K_DOWN] == True and player.yPos + player.sprite_img.get_height() + 50 <= screen_info.current_h: 
             player.move_y(player_speed)
 
         #moves the props, handles score, deletes prop if it reaches bottom or collides with player
@@ -254,9 +261,24 @@ def run():
             # if collision, remove prop from screen
             if player.collide(player, prop):
                 pygame.mixer.Sound.play(sounds.collide_prop)
-                prop.visible = False
-                score += 100
                 props.remove(prop)
+                # if collision with bonus prop
+                if prop.sprite_img_path == bonus_prop:  
+                    pygame.mixer.Sound.play(sounds.collide_prop)
+                    score += 115
+                    # sets 5 second timer
+                    player_size_timer = pygame.time.get_ticks() + 6000
+                    # grow triple player size
+                    player.sprite_img = pygame.transform.scale(player.sprite_img, (player_original_size[0] * 3, player_original_size[1] * 3))
+                    player.mask = pygame.mask.from_surface(player.sprite_img)
+                else:
+                    score += 100
+
+        # Check if it's time to revert player size
+        if player_size_timer and pygame.time.get_ticks() > player_size_timer:
+            player.sprite_img = pygame.transform.scale(player.sprite_img, player_original_size)
+            player.mask = pygame.mask.from_surface(player.sprite_img)
+            player_size_timer = None
 
     #game is done
     return "Done"
