@@ -1,4 +1,3 @@
-#space invaders game
 import pygame
 import random
 import sounds
@@ -25,7 +24,7 @@ def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
     return [button, message, message_rect, button_rect]
 
 #writes the high score to high_score.txt
-def write_high_score(score):
+def write_high_score(high_score, score):
     if score > int(high_score):
         with open("saved_states/high_score.txt", "w") as file:
             file.write(str(score))
@@ -75,9 +74,6 @@ elif(location == "MLK"):
     prop_2 = "resources/laptop.png"
 
 
-with open("saved_states/high_score.txt", "r") as file:
-    high_score = file.readline().strip()
-
 #scale background to fit screen
 DEFAULT_SIZE = (350, 245)
 original_width, original_height = background.get_size()
@@ -126,28 +122,33 @@ class Asset:
 
 #main loop
 def run():
+    #read the high score into the variable
+    with open("saved_states/high_score.txt", "r") as file:
+        high_score = file.readline().strip()
+
     global game_over_sound
     #initalizes variables when the game starts
     running = True
     timer = pygame.time.Clock()
     FPS = 85 #frames per second for speed
+    
     level = 0
     score = 0
 
-    #creates the player asset
-    player = Asset(300, 650, sprite_img = sprite)
-
-    #initiates variables to handle the set of props, number of props in each wave, and prop/player's speed
     props = []
     prop_num = 5
     prop_speed = 1
     player_speed = 7
 
-    #sets status of losing/paused to False, sets pause variables of text+color to default values
     lost_status = False
     pause_message = "Pause"
     pause_color = "#f2461f"
     paused = False
+
+    #creates the player asset
+    player = Asset(300, 650, sprite_img = sprite)
+
+    #initiates variables to handle the set of props, number of props in each wave, and prop/player's speed
 
     #creates restart and quit buttons to display on screen at relevant times
     restart_button = button_creation(30, "Restart", screen_info.current_w/2 - 150, screen_info.current_h/2 + 15, 150, 50, "#f2461f")
@@ -157,7 +158,7 @@ def run():
         #creates updated pause button based on pause status
         pause_button = button_creation(20, pause_message, 10, 10, 100, 30, pause_color)
         #sets the background based on all updated variables
-        set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused)
+        set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused, high_score)
         timer.tick(FPS)
 
         #sets lost status when player has no lives
@@ -179,7 +180,7 @@ def run():
         for event in pygame.event.get():
             #exit the loop and close the screen in player quits
             if event.type == pygame.QUIT:
-                write_high_score(score)
+                write_high_score(high_score, score)
                 running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
@@ -196,20 +197,36 @@ def run():
                     pygame.mixer.Sound.play(sounds.click)
                     pygame.mixer.music.play(-1)
                     game_over_sound = False
-                    #runs the game again and sets lost status to false
-                    write_high_score(score)
-                    run()
+                    #runs the game again and resets all the variables
+                    write_high_score(high_score, score)
+                    with open("saved_states/high_score.txt", "r") as file:
+                        high_score = file.readline().strip()
+                    level = 0
+                    score = 0
+
+                    props = []
+                    prop_num = 5
+                    prop_speed = 1
+                    player_speed = 7
+                    player.lives = 5
+
+                    lost_status = False
+                    pause_message = "Pause"
+                    pause_color = "#f2461f"
+                    paused = False
+                    #once the variables are reset, the game loop continues in the same window
+
                 if quit_button[3].collidepoint(mouse_pos):
                     pygame.mixer.Sound.play(sounds.click)
                     #quits the game
-                    write_high_score(score)
+                    write_high_score(high_score, score)
                     running = False
 
         #skips all the movement while the game is paused or character has lost
         if paused == True:
             continue
         
-        if not paused and lost_status == True:
+        if lost_status == True:
             continue
   
         #handles key presses to move the player
@@ -242,7 +259,7 @@ def run():
     return "Done"
 
 #sets the background and draws all text and buttons based on the status of the game
-def set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused):
+def set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused, high_score):
     global game_over_sound
     #draw background to screen
     screen.blit(background, (0,0)) 
