@@ -264,7 +264,7 @@ def run():
                 props.remove(prop)
                 # if collision with bonus prop
                 if prop.sprite_img_path == bonus_prop:  
-                    pygame.mixer.Sound.play(sounds.collide_prop)
+                    pygame.mixer.Sound.play(sounds.bonus_prop)
                     score += 115
                     # sets 5 second timer
                     player_size_timer = pygame.time.get_ticks() + 6000
