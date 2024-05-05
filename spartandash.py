@@ -237,7 +237,7 @@ def run():
             player.move_x(-player_speed)
         if pressed[pygame.K_UP] == True and player.yPos >= 0:
             player.move_y(-player_speed)
-        if pressed[pygame.K_DOWN] == True and player.yPos - 50 <= screen_info.current_h: 
+        if pressed[pygame.K_DOWN] == True and player.yPos + 150 <= screen_info.current_h: 
             player.move_y(player_speed)
 
         #moves the props, handles score, deletes prop if it reaches bottom or collides with player
