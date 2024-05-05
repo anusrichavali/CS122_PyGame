@@ -140,7 +140,7 @@ def run():
     #initiates variables to handle the set of props, number of props in each wave, and prop/player's speed
     props = []
     prop_num = 5
-    prop_speed = 10
+    prop_speed = 1
     player_speed = 7
 
     #sets status of losing/paused to False, sets pause variables of text+color to default values
