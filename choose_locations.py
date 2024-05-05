@@ -107,9 +107,9 @@ def run():
         screen.blit(choose_mlk[0], (choose_mlk[3].x, choose_mlk[3].y))
 
         #while the program is running, display the location images on the screen
-        screen.blit(srac_img, (choose_srac[3].x - 50, choose_srac[3].y - srac_img.get_height() - 50))
-        screen.blit(tl_img, (choose_tl[3].x - 50, choose_tl[3].y - tl_img.get_height() - 50))
-        screen.blit(mlk_img, (choose_mlk[3].x - 50, choose_mlk[3].y - mlk_img.get_height() - 50))
+        screen.blit(srac_img, (choose_srac[3].x - 75, choose_srac[3].y - srac_img.get_height() - 50))
+        screen.blit(tl_img, (choose_tl[3].x - 75, choose_tl[3].y - tl_img.get_height() - 50))
+        screen.blit(mlk_img, (choose_mlk[3].x - 75, choose_mlk[3].y - mlk_img.get_height() - 50))
 
 
         #screen.blit(background_img, (0, screen_info.current_h/2))
