@@ -1,12 +1,18 @@
 #space invaders game
 import pygame
 import random
+import sounds
 
 pygame.init()
 
 font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
 message_font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
 smaller_font = pygame.font.Font("resources/Grand9KPixel.ttf", 20)
+game_over_sound = False
+
+pygame.mixer.music.load('sound/background_music2.wav')
+pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.play(-1)
 
 #create buttons with specified sizes, fontsize, and color
 def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
@@ -120,6 +126,7 @@ class Asset:
 
 #main loop
 def run():
+    global game_over_sound
     #initalizes variables when the game starts
     running = True
     timer = pygame.time.Clock()
@@ -133,7 +140,7 @@ def run():
     #initiates variables to handle the set of props, number of props in each wave, and prop/player's speed
     props = []
     prop_num = 5
-    prop_speed = 0
+    prop_speed = 10
     player_speed = 7
 
     #sets status of losing/paused to False, sets pause variables of text+color to default values
@@ -159,9 +166,10 @@ def run():
 
         #generates a new wave of props and updates level when all props in previous wave are eliminated
         if len(props) == 0:
+            pygame.mixer.Sound.play(sounds.level_up)
             level += 1
             prop_num += 1
-            prop_speed += 1
+            prop_speed += 0.5
             player_speed += 1
             for num in range(prop_num):
                 prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([prop_1, prop_2]))
@@ -176,6 +184,7 @@ def run():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 if pause_button[3].collidepoint(mouse_pos):
+                    pygame.mixer.Sound.play(sounds.click)
                     paused = not paused
                     if paused:
                         pause_message = "Resume"
@@ -184,10 +193,14 @@ def run():
                         pause_message = "Pause"
                         pause_color = "#f2461f"
                 if restart_button[3].collidepoint(mouse_pos):
+                    pygame.mixer.Sound.play(sounds.click)
+                    pygame.mixer.music.play(-1)
+                    game_over_sound = False
                     #runs the game again and sets lost status to false
                     write_high_score(score)
                     run()
                 if quit_button[3].collidepoint(mouse_pos):
+                    pygame.mixer.Sound.play(sounds.click)
                     #quits the game
                     write_high_score(score)
                     running = False
@@ -214,11 +227,13 @@ def run():
         for prop in props:
             prop.move_y(prop_speed)
             if prop.yPos + 100 > screen_info.current_h:
+                pygame.mixer.Sound.play(sounds.prop_drop)
                 player.lives -= 1
                 score -= 125
                 props.remove(prop)
             # if collision, remove prop from screen
             if player.collide(player, prop):
+                pygame.mixer.Sound.play(sounds.collide_prop)
                 prop.visible = False
                 score += 100
                 props.remove(prop)
@@ -228,6 +243,7 @@ def run():
 
 #sets the background and draws all text and buttons based on the status of the game
 def set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused):
+    global game_over_sound
     #draw background to screen
     screen.blit(background, (0,0)) 
 
@@ -265,6 +281,10 @@ def set_background(level, player, props, lost_status, score, pause_button, resta
 
     #display lost message, restart, and quit buttons if you lost
     if lost_status == True:
+        pygame.mixer.music.stop()
+        if game_over_sound == False:
+            pygame.mixer.Sound.play(sounds.game_over)
+            game_over_sound = True
         lost_button = button_creation(60, "You Lost", screen_info.current_w/2 - 15, screen_info.current_h/2, 350, 150, "#f2461f")
         lost_button[0].blit(lost_button[1],lost_button[2])
         screen.blit(lost_button[0], (lost_button[3].x - 150, lost_button[3].y - 150))

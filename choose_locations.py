@@ -1,4 +1,6 @@
 import pygame
+import sounds
+
 pygame.init()
 
 #input: the button's text, x coordinate, y coordinate
@@ -56,6 +58,7 @@ def run():
                 mouse_position = pygame.mouse.get_pos()
                 #store "srac" as selected location and configure button colors to show selection
                 if choose_srac[3].collidepoint(mouse_position):
+                    pygame.mixer.Sound.play(sounds.click)
                     choose_srac[0].fill("#f77a5e")
                     choose_tl[0].fill("#f2461f")
                     choose_mlk[0].fill("#f2461f")
@@ -63,6 +66,7 @@ def run():
                     print("SRAC")
                 #store "su" as selected location and configure button colors to show selection
                 elif choose_tl[3].collidepoint(mouse_position):
+                    pygame.mixer.Sound.play(sounds.click)
                     choose_tl[0].fill("#f77a5e")
                     choose_srac[0].fill("#f2461f")
                     choose_mlk[0].fill("#f2461f")
@@ -70,6 +74,7 @@ def run():
                     print("TOWER LAWN")
                 #store "mlk" as selected location and configure button colors to show selection
                 elif choose_mlk[3].collidepoint(mouse_position):
+                    pygame.mixer.Sound.play(sounds.click)
                     choose_mlk[0].fill("#f77a5e")
                     choose_tl[0].fill("#f2461f")
                     choose_srac[0].fill("#f2461f")
@@ -78,6 +83,7 @@ def run():
                 #create or open the existing "selected_location.txt" file and write the finally selected character to the file
                 #move to the next page
                 elif start_button[3].collidepoint(mouse_position) and location_selected != "":
+                    pygame.mixer.Sound.play(sounds.click)
                     start_button[0].fill("#f77a5e")
                     with open("saved_states/selected_location.txt", "w") as file:
                         file.write(location_selected)

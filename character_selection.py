@@ -1,4 +1,5 @@
 import pygame
+import sounds
 
 pygame.init()
 
@@ -60,6 +61,7 @@ def run():
                 mouse_position = pygame.mouse.get_pos()
                 #store "neha" as selected character and configure button colors to show selection
                 if choose_neha[3].collidepoint(mouse_position):
+                    pygame.mixer.Sound.play(sounds.click)
                     choose_neha[0].fill("#f77a5e")
                     choose_anusri[0].fill("#f2461f")
                     choose_erica[0].fill("#f2461f")
@@ -67,12 +69,14 @@ def run():
                     print("Neha")
                 #store "anusri" as selected character and configure button colors to show selection
                 elif choose_anusri[3].collidepoint(mouse_position):
+                    pygame.mixer.Sound.play(sounds.click)
                     choose_anusri[0].fill("#f77a5e")
                     choose_neha[0].fill("#f2461f")
                     choose_erica[0].fill("#f2461f")
                     character_selected = "Anusri"
                     print("Anusri")
                 elif choose_erica[3].collidepoint(mouse_position):
+                    pygame.mixer.Sound.play(sounds.click)
                     choose_erica[0].fill("#f77a5e")
                     choose_anusri[0].fill("#f2461f")
                     choose_neha[0].fill("#f2461f")
@@ -81,6 +85,7 @@ def run():
                 #create or open the existing "selected_character.txt" file and write the finally selected character to the file
                 #move to the next page
                 elif next_button[3].collidepoint(mouse_position) and character_selected != "":
+                    pygame.mixer.Sound.play(sounds.click)
                     next_button[0].fill("#f77a5e")
                     with open("saved_states/selected_character.txt", "w") as file:
                         file.write(character_selected)
