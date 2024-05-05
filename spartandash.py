@@ -4,6 +4,7 @@ import sounds
 
 pygame.init()
 
+#load fonts and sounds
 font = pygame.font.Font("resources/Grand9KPixel.ttf", 25)
 message_font = pygame.font.Font("resources/Grand9KPixel.ttf", 60)
 smaller_font = pygame.font.Font("resources/Grand9KPixel.ttf", 20)
@@ -135,10 +136,12 @@ def run():
     running = True
     timer = pygame.time.Clock()
     FPS = 85 #frames per second for speed
-    
+
+    #initial game states
     level = 0
     score = 0
 
+    #initiates variables to handle the set of props, number of props in each wave, and prop/player's speed
     props = []
     prop_num = 5
     prop_speed = 1
@@ -147,15 +150,15 @@ def run():
     player_size_timer = None
     player_original_size = (100, 100)
 
+    #handles losing/pause status and buttons
     lost_status = False
     pause_message = "Pause"
     pause_color = "#f2461f"
     paused = False
 
+
     #creates the player asset
     player = Asset(300, 650, sprite_img = sprite)
-
-    #initiates variables to handle the set of props, number of props in each wave, and prop/player's speed
 
     #creates restart and quit buttons to display on screen at relevant times
     restart_button = button_creation(30, "Restart", screen_info.current_w/2 - 150, screen_info.current_h/2 + 15, 150, 50, "#f2461f")
@@ -253,7 +256,7 @@ def run():
         #moves the props, handles score, deletes prop if it reaches bottom or collides with player
         for prop in props:
             prop.move_y(prop_speed)
-            if prop.yPos + 100 > screen_info.current_h:
+            if prop.yPos + 100 > screen_info.current_h and prop.sprite_img_path != bonus_prop:
                 pygame.mixer.Sound.play(sounds.prop_drop)
                 player.lives -= 1
                 score -= 125
