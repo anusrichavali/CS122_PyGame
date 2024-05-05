@@ -64,14 +64,17 @@ if(location == "TOWER LAWN"):
     background = pygame.image.load("resources/tower_lawn.jpeg")
     prop_1 = "resources/Bee.png"
     prop_2 = "resources/Fly.png"
+    bonus_prop = "resources/energy.png"
 elif(location == "SRAC"):
     background = pygame.image.load("resources/srac.png")
     prop_1 = "resources/dumbbell.png"
     prop_2 = "resources/basketball.png"
+    bonus_prop = "resources/energy.png"
 elif(location == "MLK"):
     background = pygame.image.load("resources/mlk.png")
     prop_1 = "resources/books.png"
     prop_2 = "resources/laptop.png"
+    bonus_prop = "resources/energy.png"
 
 
 #scale background to fit screen
@@ -173,7 +176,7 @@ def run():
             prop_speed += 0.5
             player_speed += 1
             for num in range(prop_num):
-                prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([prop_1, prop_2]))
+                prop = Asset(random.randrange(50, screen_info.current_w - 100), random.randrange(-2000, -100), 100, random.choice([prop_1, prop_2, bonus_prop]))
                 props.append(prop)
 
         #handles button clicks 
