@@ -19,7 +19,7 @@ def button_creation(text, x, y):
 screen_info = pygame.display.Info()
 screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h))
 screen.fill("#32a0a8")
-pygame.display.set_caption("SpartanDash")
+pygame.display.set_caption("Spartan Dash")
 pygame.display.flip()
 
 #load custom font from ttf file and set size for different types of text
@@ -44,6 +44,9 @@ mlk_img = pygame.transform.scale(mlk_img, DEFAULT_SIZE)
 
 #initialize variables before running the choose_locations page
 def run():
+    screen_info = pygame.display.Info()
+    screen = pygame.display.set_mode((screen_info.current_w, screen_info.current_h))
+    screen.fill("#32a0a8")
     running = True
     location_selected = ""
     #whie the page is running
@@ -90,7 +93,7 @@ def run():
                     return "Start"
         
         #while the program is running, display the title and subtitle on the screen
-        title = title_font.render("SpartanDash: Campus Run", True, "#FFD700")
+        title = title_font.render("Spartan Dash: Campus Run", True, "#FFD700")
         screen.blit(title, ((screen_info.current_w / 2 - title.get_width() / 2), 50))
         instruction = subtitle_font.render("Choose your location.", True, "#ebfbfc")
         screen.blit(instruction, ((screen_info.current_w/2 - instruction.get_width()/2), 150))

@@ -92,7 +92,7 @@ def run():
                     return "Next"
         
         #while the program is running, display the title and subtitle on the screen
-        title = title_font.render("SpartanDash: Campus Run", True, "#FFD700")
+        title = title_font.render("Spartan Dash: Campus Run", True, "#FFD700")
         screen.blit(title, ((screen_info.current_w / 2 - title.get_width() / 2), 50))
         instruction = subtitle_font.render("Choose your character.", True, "#ebfbfc")
         screen.blit(instruction, ((screen_info.current_w/2 - instruction.get_width()/2), 150))
