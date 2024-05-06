@@ -25,10 +25,9 @@ def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
     return [button, message, message_rect, button_rect]
 
 #writes the high score to high_score.txt
-def write_high_score(high_score, score):
-    if score > int(high_score):
-        with open("saved_states/high_score.txt", "w") as file:
-            file.write(str(score))
+def write_high_score(high_score):
+    with open("saved_states/high_score.txt", "w") as file:
+        file.write(str(high_score))
 
 #load sprite (main player)
 #chooses random if selected_character.txt does not exist
@@ -169,10 +168,6 @@ def run():
         set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused, high_score)
         timer.tick(FPS)
 
-        #updates the high score in real time
-        with open("saved_states/high_score.txt", "r") as file:
-            high_score = file.readline().strip()
-        write_high_score(high_score, score)
         #sets lost status when player has no lives
         if player.lives <= 0:
             lost_status = True
@@ -195,6 +190,7 @@ def run():
         for event in pygame.event.get():
             #exit the loop and close the screen in player quits
             if event.type == pygame.QUIT:
+                write_high_score(high_score)
                 running = False
             #handle events in which the player clicks something -- even if game is paused or lost
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -228,10 +224,13 @@ def run():
                     pause_message = "Pause"
                     pause_color = "#f2461f"
                     paused = False
+
+                    write_high_score(high_score)
                 #handle user quitting the game
                 if quit_button[3].collidepoint(mouse_pos):
                     pygame.mixer.Sound.play(sounds.click)
                     #quits the game
+                    write_high_score(high_score)
                     running = False
 
         #skips all the movement while the game is paused
@@ -240,7 +239,7 @@ def run():
         #skips all movement while the game is paused
         if lost_status == True:
             continue
-  
+
         #handles key presses to move the player
         pressed = pygame.key.get_pressed()
         if pressed[pygame.K_RIGHT] == True and player.xPos + player.sprite_img.get_width() <= screen_info.current_w:
@@ -258,6 +257,8 @@ def run():
             if prop.yPos + 100 > screen_info.current_h and prop.sprite_img_path != bonus_prop:
                 pygame.mixer.Sound.play(sounds.prop_drop)
                 player.lives -= 1
+                if high_score == score:
+                    high_score -= 125
                 score -= 125
                 props.remove(prop)
             # if collision, remove prop from screen
@@ -275,6 +276,9 @@ def run():
                     player.mask = pygame.mask.from_surface(player.sprite_img)
                 else:
                     score += 100
+                    if score > int(high_score):
+                        high_score = score
+
 
         # Check if it's time to revert player size
         if player_size_timer and pygame.time.get_ticks() > player_size_timer:
