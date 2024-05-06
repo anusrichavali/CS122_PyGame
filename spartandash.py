@@ -98,8 +98,6 @@ class Asset:
         else:
             self.sprite_img = None
             self.mask = None
-        self.lasers = []
-        self.cool_down_counter = 0
         self.visible = True
 
     #draw the character on the screen
@@ -150,12 +148,11 @@ def run():
     player_size_timer = None
     player_original_size = (100, 100)
 
-    #handles losing/pause status and buttons
+    #handles losing+pause status and buttons
     lost_status = False
     pause_message = "Pause"
     pause_color = "#f2461f"
     paused = False
-
 
     #creates the player asset
     player = Asset(300, 650, sprite_img = sprite)
@@ -164,6 +161,7 @@ def run():
     restart_button = button_creation(30, "Restart", screen_info.current_w/2 - 150, screen_info.current_h/2 + 15, 150, 50, "#f2461f")
     quit_button = button_creation(30, "Quit", screen_info.current_w/2 + 25, screen_info.current_h/2 + 15, 150, 50, "#f2461f")
 
+    #game loop
     while running:
         #creates updated pause button based on pause status
         pause_button = button_creation(20, pause_message, 10, 10, 100, 30, pause_color)
@@ -171,11 +169,15 @@ def run():
         set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused, high_score)
         timer.tick(FPS)
 
+        #updates the high score in real time
+        with open("saved_states/high_score.txt", "r") as file:
+            high_score = file.readline().strip()
+        write_high_score(high_score, score)
         #sets lost status when player has no lives
         if player.lives <= 0:
             lost_status = True
 
-        #generates a new wave of props and updates level when all props in previous wave are eliminated
+        #generates a new wave of props and updates level + player/prop speed when all props in previous wave are eliminated
         if len(props) == 0:
             pygame.mixer.Sound.play(sounds.level_up)
             level += 1
@@ -193,10 +195,11 @@ def run():
         for event in pygame.event.get():
             #exit the loop and close the screen in player quits
             if event.type == pygame.QUIT:
-                write_high_score(high_score, score)
                 running = False
+            #handle events in which the player clicks something -- even if game is paused or lost
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
+                #handle pause + resume game events
                 if pause_button[3].collidepoint(mouse_pos):
                     pygame.mixer.Sound.play(sounds.click)
                     paused = not paused
@@ -206,14 +209,12 @@ def run():
                     else:
                         pause_message = "Pause"
                         pause_color = "#f2461f"
+                #handle restarting the game
                 if restart_button[3].collidepoint(mouse_pos):
                     pygame.mixer.Sound.play(sounds.click)
                     pygame.mixer.music.play(-1)
                     game_over_sound = False
-                    #runs the game again and resets all the variables
-                    write_high_score(high_score, score)
-                    with open("saved_states/high_score.txt", "r") as file:
-                        high_score = file.readline().strip()
+                    #reset all variables and continue game in the same window
                     level = 0
                     score = 0
 
@@ -227,18 +228,16 @@ def run():
                     pause_message = "Pause"
                     pause_color = "#f2461f"
                     paused = False
-                    #once the variables are reset, the game loop continues in the same window
-
+                #handle user quitting the game
                 if quit_button[3].collidepoint(mouse_pos):
                     pygame.mixer.Sound.play(sounds.click)
                     #quits the game
-                    write_high_score(high_score, score)
                     running = False
 
-        #skips all the movement while the game is paused or character has lost
+        #skips all the movement while the game is paused
         if paused == True:
             continue
-        
+        #skips all movement while the game is paused
         if lost_status == True:
             continue
   
@@ -268,7 +267,7 @@ def run():
                 # if collision with bonus prop
                 if prop.sprite_img_path == bonus_prop:  
                     pygame.mixer.Sound.play(sounds.bonus_prop)
-                    score += 115
+                    #score += 115
                     # sets 5 second timer
                     player_size_timer = pygame.time.get_ticks() + 6000
                     # grow triple player size
