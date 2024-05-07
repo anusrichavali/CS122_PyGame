@@ -14,6 +14,8 @@ pygame.mixer.music.load('sound/background_music2.wav')
 pygame.mixer.music.set_volume(0.05)
 pygame.mixer.music.play(-1)
 
+#input fontSize, message, x and y coordinates, fontsize, and button color
+#returns a list of necessary parameters that need to be blit on the screen separately
 #create buttons with specified sizes, fontsize, and color
 def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
     font = pygame.font.Font("resources/Grand9KPixel.ttf", fontSize)
@@ -24,6 +26,7 @@ def button_creation(fontSize, text, x, y, sizeW, sizeH, color):
     button_rect = pygame.Rect(x, y, sizeW, sizeH)
     return [button, message, message_rect, button_rect]
 
+#input: high score
 #writes the high score to high_score.txt
 def write_high_score(high_score):
     with open("saved_states/high_score.txt", "w") as file:
@@ -122,6 +125,8 @@ class Asset:
             return player.mask.overlap(prop.mask, (offset_x, offset_y))
         return False
 
+#returns strings based on the button clicked by the user
+#return values are read by main controller to decide game status
 #main loop
 def run():
     #read the high score into the variable
@@ -289,6 +294,8 @@ def run():
     #game is done
     return "Done"
 
+#input: buttons and status variables from run() that need to be blit onto the screen
+#no return value -- updates the pygame display
 #sets the background and draws all text and buttons based on the status of the game
 def set_background(level, player, props, lost_status, score, pause_button, restart_button, quit_button, paused, high_score):
     global game_over_sound
