@@ -131,7 +131,8 @@ class Asset:
 def run():
     #read the high score into the variable
     with open("saved_states/high_score.txt", "r") as file:
-        high_score = file.readline().strip()
+        initial_high_score = file.readline().strip()
+    high_score = initial_high_score
 
     global game_over_sound
     #initalizes variables when the game starts
@@ -262,7 +263,11 @@ def run():
             if prop.yPos + 100 > screen_info.current_h and prop.sprite_img_path != bonus_prop:
                 pygame.mixer.Sound.play(sounds.prop_drop)
                 player.lives -= 1
-                if high_score == score:
+                #if current running high score is being updated with score, and the score is decreasing, revert back to inital high score
+                if high_score - 125 < int(initial_high_score):
+                    high_score = int(initial_high_score)
+                #if the running high score is still greater than old high score, subtract
+                else:
                     high_score -= 125
                 score -= 125
                 props.remove(prop)
