@@ -118,4 +118,3 @@ def run():
 
         #update all the changes while the screen is running
         pygame.display.update()
-
